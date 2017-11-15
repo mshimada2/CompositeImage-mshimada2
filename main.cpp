@@ -1,106 +1,252 @@
 #include<iostream>
 #include<string>
 #include<vector>
-#include<cstdlib>
 #include "bitmap.h"
 
 using namespace std;
 
 //prototypes
 
-vector <vector <Pixel> > avgRgb(vector <vector <Pixel> > & bmp, vector <string> picList);
+vector <vector <Pixel> > avgRgb(vector <string>);
 
-bool checkSize(vector <vector <Pixel> >, vector <vector <Pixel> >);
+bool correctBmp(string);
+
+bool correctSize(string, string);
+
+int xSize(Bitmap);
+
+int ySize(Bitmap);
 
 
 int main()
 
 {
-
+    //variables
+    
     Bitmap photo;
-    Pixel rgb;
-    string picFile;
-    vector <vector <Pixel> > bmp;
-    vector < vector <Pixel> > ogBmp;
+       
+    int size;
+    
+    string picFile1;
+    
+    string picFile2;
+    
     vector <string> picList;
-    cout<<"Enter bitmap files to combine"<<endl;
-
-//makes sure the user enters a file 10 times or enters done or DONE
-
-  for(int f = 0; f < 10; f++)  //f = file
-
-  {
-  cout << "yeah I got one\n";
-
-    cin>>picFile;
-
-//turns the multiple files into a vector and opens them up and check to see if theyre the correct type of file (.bmp)
-
-
-    if(picFile == "DONE") break;
     
-    photo.open(picFile);
-
-
-
+    bool validBmp1;
     
-
-    if(photo.isImage())
+    bool validBmp2;
     
+    bool validBmp3;
+    
+//checks for the parameters and sees if the 
+
+    do     
     {
-      if(picList.empty())
-      {
-        ogBmp = photo.toPixelMatrix();
-        picList.push_back(picFile);
-      }
-      else
-      {
-        bool correctSize;
-        bmp = photo.toPixelMatrix();
-        correctSize = checkSize(ogBmp,bmp);
-        if(correctSize == true)
-        {
+    cout<<"Enter bitmap files to combine"<<endl;
+    cin>>picFile2;
+validBmp1 == correctBmp(picFile2);
 
-          picList.push_back(picFile);
+    if (validBmp1 == false)
 
-        }
-      }
+    {
+
+    cout<<"Error: File type is invalid or does not exist. Please try again. "<<endl;
 
     }
-  
-  else
+
+    else
+
+    {
+
+    picList.push_back(picFile2);
+
+    }
+
+
+    }
+
+  while(validBmp1 == false);
+
+       
+       
+  while(picList.size() < 10 || picFile1 == "Done")
+       
   {
 
+   
+    
+    {
 
-    cout<<"Error: This is not a bitmap image"<<endl;
-    
-    return 0;
+    if(picList.size() < 10)
+
+    {
+      cout<<"Please enter another file or type in DONE to start combining files"<<endl;
+      cin>>picFile1;
+
+
+      if(picFile1 == "DONE")
+
+      {
+
+      cout<<"You have entered DONE. Start combining images"<<endl;
+
+      break;
+
+      }
+
+
+      else if(picList.size() < 10 && picFile1 != "DONE")
+
+      {
+        validBmp2 = correctBmp(picFile1);
+      
+      if(validBmp2 == true)
+        
+      {
+
+        validBmp3 = correctSize(picFile1, picFile2);
+
+        if(validBmp3 == true)
+
+        {
+
+        picList.push_back(picFile1);
+
+
+        }
+
+    else
+
+    {
+
+    cout<<"Error: The file you entered is invalid and/or does not exist. Please try again. "<<endl;
+
+
+    }
+
+   }
+
   }
-    
+
+  else
+
+  {
+
+    cout<<"The amount of files uploaded has reached its limit of 10"<<endl;
+
+    break;
+
+
+  }
+}      
  
-  
-  if(picList.size() < 2)
-  {
+    
+    vector <vector <Pixel> > compositeImage = avgRgb(picList);
+ 
+    if(picList.size() >= 2)
+    
+    {   
+    
+    photo.fromPixelMatrix(compositeImage);
+    photo.save("composite-mshimada2.bmp");
+    
+    }
 
-    cout << "A conposite image cannot be created." << endl;
-  
-  }
-  
   else
-  {
-    avgRgb(bmp, picList);
-    
-    vector <vector <Pixel> > compositeImage = avgRgb(bmp, picList);
-    photo.fromPixelMatrix(bmp);
-    photo.save("composite-mshimada.bmp");
-  }
-    
-    return 0;
 
+  {
+    cout<<"Error: You need at least 2 images for this program to run. Please try again. "<<endl;
+
+  }
+
+    return 0;
 
 }
 
-vector <vector <Pixel> > avgRgb(vector <vector <Pixel> > & bmp, vector <string> picList)
+bool correctBmp(string picFile)
+
+ {
+    bool validBmp;
+    
+    Bitmap photo;
+
+    picture.open(picFile);
+
+    validBmp = photo.isImage();
+
+    return validBmp;
+
+  }
+
+
+bool correctSize(string picFile1, string picFile2)
+
+{
+    Bitmap p1;
+    Bitmap p2;
+    
+    p1.open(picFile1);
+    p2.open(picFile2);
+
+    int correctHeight1 = xSize(p1);
+    int correctWidth1 = ySize(p1);
+    
+    int correctHeight2 = xSize(p2);
+    int correctWidth2 = ySize(p2);
+
+
+    if(correctHeight1 == correctHeight2)
+
+    {
+    
+      return true;
+      
+      }
+
+
+    
+    if(correctWidth1 == correctWidth2)
+
+    {
+
+    return true;
+
+    }
+
+    else
+    
+    {
+
+    return false;
+
+    }
+
+
+
+int xSize(Bitmap x)
+
+{
+    vector <vector <Pixel> > row = x.toPixelMatrix();
+    
+    return row.size();
+
+ }
+
+
+
+ int ySize(Bitmap y)
+
+ {
+
+    vector <vector <Pixel> > column = y.toPixelMatrix();
+    return column.size();
+
+ }
+
+}
+
+    vector <vector <Pixel> > avgRgb( vector <string> picRgb)
 
 {
 
@@ -120,12 +266,12 @@ vector <vector <Pixel> > avgRgb(vector <vector <Pixel> > & bmp, vector <string> 
         bmpComb2.open(picList[x]);
         photoAvg = bmpComb2.toPixelMatrix();
 
-        for(int y = 0; y < bmp[x].size(); y++)
+        for(int y = 0; y < photoComb.size(); y++)
 
         {
 
 
-        for (int f = 0; f < picList.size(); f++);
+        for (int f = 0; f < picList[y].size(); f++);
 
         {
 
@@ -142,42 +288,11 @@ vector <vector <Pixel> > avgRgb(vector <vector <Pixel> > & bmp, vector <string> 
         }
         cout<<"The file "<< x+1<<" of "<<picList.size()<<" has been combined."<<endl;
 
-
-
-        }
     }
 
-return photoComb; 
+    return photoComb;
+ 
 
 }
 
-bool checkSize(vector <vector <Pixel> > Matrix1, vector <vector <Pixel> > Matrix2)
 
-{
-
-    int correctHeight;
-    int correctWidth;
-
-    correctHeight = Matrix1.size();
-    correctWidth = Matrix1[0].size();
-
-    if(correctHeight == Matrix2.size())
-
-    {
-    
-      if(correctWidth == Matrix2[0].size())
-      {
-        return true;
-      }
-      else
-      {
-        return false;
-      }
-
-    }
-    else 
-    {
-      return false;
-    }
-
-}
