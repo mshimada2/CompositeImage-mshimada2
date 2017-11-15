@@ -42,10 +42,14 @@ int main()
 //checks for the parameters and sees if the 
 
     do     
+    
     {
+    
     cout<<"Enter bitmap files to combine"<<endl;
+    
     cin>>picFile2;
-validBmp1 == correctBmp(picFile2);
+    
+    validBmp1 == correctBmp(picFile2);
 
     if (validBmp1 == false)
 
@@ -68,15 +72,12 @@ validBmp1 == correctBmp(picFile2);
 
   while(validBmp1 == false);
 
-       
+     //next while loop takes care of the other files that come after the first one  
        
   while(picList.size() < 10 || picFile1 == "Done")
        
   {
 
-   
-    
-    {
 
     if(picList.size() < 10)
 
